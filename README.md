@@ -40,3 +40,8 @@ mkdir example && cd example
 npx hardhat example  # create an example project
 npx hardhat artela # run the local node
 ```
+
+## TODO
+* [ ] Integrate @artela/aspect-tool commands
+* [ ] Publish NPM package
+* [ ] Develop usage documentation
