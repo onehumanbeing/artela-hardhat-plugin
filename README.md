@@ -38,10 +38,80 @@ Just run `npm run build` ️👷
 ```
 mkdir example && cd example
 npx hardhat example  # create an example project
-npx hardhat artela # run the local node
+npm install
+# TODO: install plugin
+npm install dot-env
 ```
 
+create file .env
+```
+PRIVATEKEY=0xYOURPRIVATEKEY
+```
+
+update hardhat.config.js
+```
+...
+// TODO: replace with npm package
+require("../dist/src/index");
+const dotenv = require('dotenv');
+...
+
+// TODO: divide mainnet and testnet
+// TODO: add local network
+module.exports = {
+  solidity: "0.8.7",
+  networks: {
+    artela: {
+      url: "https://betanet-rpc2.artela.network",
+      accounts: [process.env.PRIVATEKEY],
+    }
+  }
+};
+
+```
+
+commands
+```
+npx hardhat artela # run the local node
+npx hardhat compile # compile solidity
+npx hardhat compile-aspect # compile the aspect, default aspect/index.ts
+npx hardhat deploy-aspect --joinpoints preContractCall --wasm build/index_debug.wasm # deploy the aspect
+```
+
+deploy smart contract
+
+scripts/deploy.js 
+```
+const hre = require("hardhat");
+
+async function main() {
+  const MyToken = await hre.ethers.getContractFactory("MyToken");
+  const initialSupply = "1000000000000000000000"; // 1000 tokens
+  const token = await MyToken.deploy(initialSupply);
+  await token.deployed();
+  console.log("MyToken deployed to:", token.address);
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
+```
+
+run the script
+
+```
+npx hardhat run scripts/deploy.js --network artela   
+```
+
+
+
 ## TODO
+* [ x ] Support local node
+* [ x ] Support aspect build and deploy
 * [ ] Integrate @artela/aspect-tool commands
 * [ ] Publish NPM package
 * [ ] Develop usage documentation
+* [ ] Example project

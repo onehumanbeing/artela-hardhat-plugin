@@ -3,6 +3,7 @@ import { lazyObject } from "hardhat/plugins";
 import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
 import path from "path";
 import { spawn } from "child_process";
+import { compileAspect, deployAspect } from "./internal/aspect";
 
 import { ExampleHardhatRuntimeEnvironmentField } from "./ExampleHardhatRuntimeEnvironmentField";
 // This import is needed to let the TypeScript compiler know that it should include your type
@@ -42,21 +43,11 @@ extendConfig(
   }
 );
 
-// extendEnvironment((hre) => {
-//   // We add a field to the Hardhat Runtime Environment here.
-//   // We use lazyObject to avoid initializing things until they are actually
-//   // needed.
-//   hre.example = lazyObject(() => new ExampleHardhatRuntimeEnvironmentField());
-// });
-
 task("artela", "run artela devnet local")
   .setAction(async () => {
     console.log("Running artela devnet local");
     const scriptPath = path.join(__dirname, 'local_node.sh');
-    console.log(scriptPath);
     const build = spawn('bash', [scriptPath], { stdio: 'inherit' });
-
-    // Wait for the child process to exit
     await new Promise((resolve, reject) => {
       build.on('close', (code) => {
         console.log(`child process exited with code ${code}`);
@@ -68,3 +59,24 @@ task("artela", "run artela devnet local")
       });
     });
 });
+
+task("compile-aspect", "Compiles Aspect")
+  .addOptionalParam("file", "The entry file to compile", "aspect/index.ts")
+  .addOptionalParam("target", "The compilation target: 'debug' or 'release'", "debug")
+  .addOptionalParam("output", "The path to the output file")
+  .setAction(async (taskArgs, hre) => {
+    if (!["debug", "release"].includes(taskArgs.target)) {
+      console.error("Invalid target. Please choose 'debug' or 'release'.");
+      process.exit(1);
+    }
+    await compileAspect(taskArgs.file, taskArgs.target, taskArgs.output);
+  });
+
+task("deploy-aspect", "Deploys an aspect")
+  .addOptionalParam("properties", "The properties of the aspect", "[]")
+  .addOptionalParam("joinpoints", "The join points of the aspect", "[]")
+  .addOptionalParam("wasm", "The path to the wasm file")
+  .addOptionalParam("gas", "The gas for the transaction")
+  .setAction(async (taskArgs, hre) => {
+    await deployAspect(taskArgs.properties, taskArgs.joinpoints, taskArgs.wasm, taskArgs.gas);
+  });
