@@ -9,6 +9,7 @@
     "hardhat": "^2.22.2"
   },
   "dependencies": {
+    "@artela/web3": "^1.9.22",
     "@openzeppelin/contracts": "^4.9.6",
     "dotenv": "^16.4.5"
   }

@@ -79,4 +79,4 @@ task("deploy-aspect", "Deploys an aspect")
   .addOptionalParam("gas", "The gas for the transaction")
   .setAction(async (taskArgs, hre) => {
     await deployAspect(taskArgs.properties, taskArgs.joinpoints, taskArgs.wasm, taskArgs.gas);
-  });
+});

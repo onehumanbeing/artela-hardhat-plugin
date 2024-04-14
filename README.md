@@ -103,15 +103,18 @@ main()
 run the script
 
 ```
-npx hardhat run scripts/deploy.js --network artela   
+npx hardhat run scripts/deploy.ts --network artela   
 ```
 
 ## TODO
 * [ x ] Local node
 * [ x ] Aspect build and deploy
-* [ ] Aspect bind and unbind
-* [ ] deploy contract and aspect in scripts
-* [ ] Integrate @artela/aspect-tool commands
+* [ x ] Aspect bind and unbind
+* [ x ] deploy contract and aspect in scripts
+* [ x ] Integrate @artela/aspect-tool commands
+* [ ] Use custom genesis.json to start local node, add test wallet account with initail balance
+* [ ] Contract send/call
 * [ ] Publish NPM package
-* [ ] Develop usage documentation
+* [ ] Developer usage documentation
+* [ ] Simple deployment for aspects and contracts in scripts
 * [ ] Finilize example project

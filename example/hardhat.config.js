@@ -27,6 +27,10 @@ module.exports = {
     artela: {
       url: "https://betanet-rpc2.artela.network",
       accounts: [process.env.PRIVATEKEY],
+    },
+    local: {
+      url: "http://127.0.0.1:8545", // Replace with your local node URL if different
+      // accounts: [process.env.PRIVATEKEY],
     }
   }
 };

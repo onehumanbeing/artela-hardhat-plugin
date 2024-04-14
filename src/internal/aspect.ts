@@ -2,6 +2,31 @@ import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 const Web3 = require("@artela/web3");
+const ARTELA_ADDR = "0x0000000000000000000000000000000000A27E14";
+const ASPECT_ADDR = "0x0000000000000000000000000000000000A27E14";
+
+function getArtelaConfig(): { nodeUrl: string; privateKey: string } {
+  const baseDir = process.cwd();
+  const configPath = path.join(baseDir, 'hardhat.config.js');
+  if (!fs.existsSync(configPath)) {
+    console.log("hardhat.config.js does not exist. Please create it.");
+    process.exit(0);
+  }
+  const config = require(configPath);
+  const nodeUrl = config.networks.artela?.url;
+  if (!nodeUrl) {
+    console.log("Artela Node URL is not configured in hardhat.config.js. Please set it.");
+    process.exit(0);
+  }
+  const accounts = config.networks.artela.accounts;
+  if (!accounts) {
+    console.log("Artela accounts are not configured in hardhat.config.js. Please set them.");
+    process.exit(0);
+  }
+  const privateKey = accounts[0];
+
+  return { nodeUrl, privateKey };
+}
 
 /**
  * Compiles an AssemblyScript file.
@@ -53,27 +78,10 @@ console.log(`Running command: ${command} ${args.join(' ')}`);
 }
 
 export async function deployAspect(
-  properties: "{}", joinPoints: "[]", wasmPath: string, gas: string
+  properties: string | null, joinPoints: Array<string> | null, wasmPath: string, gas: string
 ) {
-  const ARTELA_ADDR = "0x0000000000000000000000000000000000A27E14";
-  const baseDir = process.cwd();
-  const configPath = path.join(baseDir, 'hardhat.config.js');
-  if (!fs.existsSync(configPath)) {
-    console.log("hardhat.config.js does not exist. Please create it.");
-    return;
-  }
-  const config = require(configPath);
-  const nodeUrl = config.networks.artela?.url;
-  if (!nodeUrl) {
-    console.log("Artela Node URL is not configured in hardhat.config.js. Please set it.");
-    return;
-  }
-  const accounts = config.networks.artela.accounts;
-  if (!accounts) {
-    console.log("Artela accounts are not configured in hardhat.config.js. Please set them.");
-    return;
-  }
-  const privateKey = accounts[0];
+  // TODO: gas nullable for default value
+  const { nodeUrl, privateKey } = getArtelaConfig();
   const web3 = new Web3(nodeUrl);
   let gasPrice = await web3.eth.getGasPrice();
   let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
@@ -81,7 +89,7 @@ export async function deployAspect(
   web3.eth.accounts.wallet.add(sender.privateKey);
   let propertiesArr = properties ? JSON.parse(properties) : [];
   let joinPointsArr = joinPoints || [];
-  const validJoinPoints = ['PreContractCall', 'PostContractCall', 'PreTxExecute', 'PostTxExecute', 'VerifyTx'];
+  const validJoinPoints = ['preContractCall', 'postContractCall', 'preTxExecute', 'postTxExecute', 'verifyTx'];
   for (const joinPoint of joinPointsArr) {
     if (!validJoinPoints.includes(joinPoint)) {
       console.log(`Invalid join point: ${joinPoint}`);
@@ -125,4 +133,62 @@ export async function deployAspect(
   // TODO: support explorer verify
   // https://betanet-scan.artela.network/tx/0x8c56c4903fd039a5c54f1b0e8111d5b5d6ba745fe7aec78961b31809c637206f
   console.log("== deploy aspectID ==", aspectID)
+  return aspectID;
+}
+
+export async function bindAspect(contractAddress: string, aspectId: string, gas: string) {
+  // TODO: gas nullable for default value
+  const { nodeUrl, privateKey } = getArtelaConfig();
+  const web3 = new Web3(nodeUrl);
+  let gasPrice = await web3.eth.getGasPrice();
+  let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
+  web3.eth.accounts.wallet.add(sender.privateKey);
+  let storageInstance = new web3.eth.Contract([], contractAddress);
+  let bind = await storageInstance.bind({
+      priority: 1,
+      aspectId: aspectId,
+      aspectVersion: 1,
+  })
+  let tx = {
+      from: sender.address,
+      data: bind.encodeABI(),
+      gasPrice,
+      to: ASPECT_ADDR,
+      gas: parseInt(gas) || 9000000
+  }
+  let signedTx = await web3.eth.accounts.signTransaction(tx, sender.privateKey);
+  console.log("sending signed transaction...");
+  await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+      .on('receipt', (receipt: any) => {
+          console.log(receipt);
+      });
+  console.log("== aspect bind success ==");
+}
+
+export async function unbindAspect(contractAddress: string, aspectId: string, gas: string) {
+  // TODO: gas nullable for default value
+  const { nodeUrl, privateKey } = getArtelaConfig();
+  const web3 = new Web3(nodeUrl);
+  let gasPrice = await web3.eth.getGasPrice();
+  let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
+  web3.eth.accounts.wallet.add(sender.privateKey);
+  const aspectContract = new web3.atl.aspectCore();
+    // bind the smart contract with aspect
+    const unbind = await aspectContract.methods.unbind(
+        aspectId,
+        contractAddress
+    )
+    const tx = {
+        from: sender.address,
+        data: unbind.encodeABI(),
+        gasPrice,
+        to: aspectContract.options.address,
+        gas: parseInt(gas) || 9000000
+      }
+    const signedTx = await web3.eth.accounts.signTransaction(tx, sender.privateKey);
+    await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+        .on('receipt', (receipt: any) => {
+            console.log(receipt);
+        });
+    console.log("== aspect unbind success ==");
 }

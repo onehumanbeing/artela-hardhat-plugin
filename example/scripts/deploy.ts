@@ -4,6 +4,7 @@
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 const hre = require("hardhat");
+import { bindAspect, deployAspect } from "../../dist/src/internal/aspect";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -20,6 +21,11 @@ async function main() {
   await token.deployed();
 
   console.log("MyToken deployed to:", token.address);
+  // aspect deploy
+  const aspect = await deployAspect("[]", ["preContractCall"], "build/index_debug.wasm", "");
+  console.log("Aspect deployed to:", aspect);
+  // bind
+  const bind = await bindAspect(token.address, aspect, "");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
