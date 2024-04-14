@@ -1,6 +1,6 @@
 /dist
 /install
-/example
+/example/build
 # Logs
 logs
 *.log

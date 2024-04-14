@@ -114,4 +114,4 @@ npx hardhat run scripts/deploy.js --network artela
 * [ ] Integrate @artela/aspect-tool commands
 * [ ] Publish NPM package
 * [ ] Develop usage documentation
-* [ ] Example project
+* [ ] Finilize example project

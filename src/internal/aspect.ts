@@ -80,8 +80,14 @@ export async function deployAspect(
   console.log("from address: ", sender.address);
   web3.eth.accounts.wallet.add(sender.privateKey);
   let propertiesArr = properties ? JSON.parse(properties) : [];
-  // TODO: params validation joinPoints
   let joinPointsArr = joinPoints || [];
+  const validJoinPoints = ['PreContractCall', 'PostContractCall', 'PreTxExecute', 'PostTxExecute', 'VerifyTx'];
+  for (const joinPoint of joinPointsArr) {
+    if (!validJoinPoints.includes(joinPoint)) {
+      console.log(`Invalid join point: ${joinPoint}`);
+      process.exit(0);
+    }
+  }
   //read wasm code
   let aspectCode = "";
   aspectCode = fs.readFileSync(wasmPath, {encoding: "hex"});
@@ -117,5 +123,6 @@ export async function deployAspect(
   // TODO: save aspectID locally
   // TODO: add explorer view
   // TODO: support explorer verify
+  // https://betanet-scan.artela.network/tx/0x8c56c4903fd039a5c54f1b0e8111d5b5d6ba745fe7aec78961b31809c637206f
   console.log("== deploy aspectID ==", aspectID)
 }
