@@ -113,6 +113,7 @@ npx hardhat run scripts/deploy.ts --network artela
 * [ x ] deploy contract and aspect in scripts
 * [ x ] Integrate @artela/aspect-tool commands
 * [ ] Use custom genesis.json to start local node, add test wallet account with initail balance
+* [ ] Add commands like: check account balance
 * [ ] Contract send/call
 * [ ] Publish NPM package
 * [ ] Developer usage documentation
