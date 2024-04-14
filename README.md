@@ -1,4 +1,4 @@
-# Hardhat TypeScript plugin for Artela
+# Hardhat plugin for Artela Network
 
 ## Installation
 

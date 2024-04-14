@@ -1,9 +1,9 @@
 {
-  "name": "hardhat-ts-plugin-boilerplate",
+  "name": "artela-hardhat-plugin",
   "version": "0.0.1",
-  "description": "Hardhat TypeScript plugin boilerplate",
+  "description": "Hardhat plugin for Artela Network",
   "repository": "github:nomiclabs/hardhat-ts-plugin-boilerplate",
-  "author": "Nomic Labs LLC",
+  "author": "Henry Yuan<hy2878@nyu.edu>",
   "license": "MIT",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

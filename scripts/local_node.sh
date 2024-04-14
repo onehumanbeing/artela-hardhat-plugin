@@ -41,7 +41,7 @@ fi
 # configure the network start
 
 KEY="mykey"
-KEY2="mykey2"
+KEY2="0x58a016897D9b7694ddBee19892FDA09Ddd2b8782"
 KEY3="mykey3"
 KEY4="mykey4"
 
