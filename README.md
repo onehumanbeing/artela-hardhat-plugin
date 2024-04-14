@@ -106,11 +106,11 @@ run the script
 npx hardhat run scripts/deploy.js --network artela   
 ```
 
-
-
 ## TODO
-* [ x ] Support local node
-* [ x ] Support aspect build and deploy
+* [ x ] Local node
+* [ x ] Aspect build and deploy
+* [ ] Aspect bind and unbind
+* [ ] deploy contract and aspect in scripts
 * [ ] Integrate @artela/aspect-tool commands
 * [ ] Publish NPM package
 * [ ] Develop usage documentation
