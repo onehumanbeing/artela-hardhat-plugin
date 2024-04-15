@@ -43,7 +43,8 @@ fi
 KEY="mykey"
 KEY2="art14k7grndspgjxrfdtwz3a79qpuzne59rcg5y2vp"
 KEY3="art17ze2mqjwnr26xfz6nc7gthd8r4gncd73a585zw"
-KEY4="mykey4"
+KEY4="art192acc7lnj5exc23mfzwnlh5yfq3w2hx06pkj0u"
+KEY5="art1vd4czwr4hlhtt9qs3xc8cxx0ducmylz4sh4l5m"
 
 CHAINID="artela_11820-1"
 MONIKER="localtestnet"
@@ -75,6 +76,7 @@ artelad keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO
 artelad keys add $KEY2 --keyring-backend $KEYRING --algo $KEYALGO
 artelad keys add $KEY3 --keyring-backend $KEYRING --algo $KEYALGO
 artelad keys add $KEY4 --keyring-backend $KEYRING --algo $KEYALGO
+artelad keys add $KEY5 --keyring-backend $KEYRING --algo $KEYALGO
 
 # Set moniker and chain-id for artela (Moniker can be anything, chain-id must be an integer)
 echo artelad init $MONIKER --chain-id $CHAINID
@@ -101,6 +103,8 @@ artelad add-genesis-account $KEY 100000000000000000000000000uart --keyring-backe
 artelad add-genesis-account $KEY2 100000000000000000000000000uart --keyring-backend $KEYRING
 artelad add-genesis-account $KEY3 100000000000000000000000000uart --keyring-backend $KEYRING
 artelad add-genesis-account $KEY4 100000000000000000000000000uart --keyring-backend $KEYRING
+artelad add-genesis-account $KEY5 100000000000000000000000000uart --keyring-backend $KEYRING
+
 echo artelad add-genesis-account $KEY 100000000000000000000000000uart --keyring-backend $KEYRING
 
 # Sign genesis transaction
