@@ -29,8 +29,8 @@ module.exports = {
       accounts: [process.env.PRIVATEKEY],
     },
     local: {
-      url: "http://127.0.0.1:8545", // Replace with your local node URL if different
-      // accounts: [process.env.PRIVATEKEY],
+      url: "http://127.0.0.1:8545",
+      accounts: ["0xc5e3059ac8e54e415e3d81831fc24f292f825ae3d2690bab97d3e3c80065046e"],
     }
   }
 };

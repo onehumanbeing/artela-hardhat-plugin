@@ -41,8 +41,8 @@ fi
 # configure the network start
 
 KEY="mykey"
-KEY2="0x58a016897D9b7694ddBee19892FDA09Ddd2b8782"
-KEY3="mykey3"
+KEY2="art14k7grndspgjxrfdtwz3a79qpuzne59rcg5y2vp"
+KEY3="art17ze2mqjwnr26xfz6nc7gthd8r4gncd73a585zw"
 KEY4="mykey4"
 
 CHAINID="artela_11820-1"

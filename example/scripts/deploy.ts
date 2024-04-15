@@ -7,25 +7,18 @@ const hre = require("hardhat");
 import { bindAspect, deployAspect } from "../../dist/src/internal/aspect";
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile 
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
-
-  // We get the contract to deploy
+  const network = hre.network.name;
   const MyToken = await hre.ethers.getContractFactory("MyToken");
-  const initialSupply = "1000000000000000000000"; // 1000 tokens
-  const token = await MyToken.deploy(initialSupply);
+  const initialSupply = "1000000000000000000000";
+  console.log("start deploy")
+  const token = await MyToken.deploy(initialSupply, { gasLimit: 9000000 }); // , { gasLimit: 9000000 } when local ??
   await token.deployed();
-
   console.log("MyToken deployed to:", token.address);
   // aspect deploy
-  const aspect = await deployAspect("[]", ["preContractCall"], "build/index_debug.wasm", "");
+  const aspect = await deployAspect("[]", ["preContractCall"], "build/index_debug.wasm", "", network);
   console.log("Aspect deployed to:", aspect);
   // bind
-  const bind = await bindAspect(token.address, aspect, "");
+  const bind = await bindAspect(token.address, aspect, "9000000", network);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

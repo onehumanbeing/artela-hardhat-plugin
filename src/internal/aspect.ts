@@ -5,7 +5,7 @@ const Web3 = require("@artela/web3");
 const ARTELA_ADDR = "0x0000000000000000000000000000000000A27E14";
 const ASPECT_ADDR = "0x0000000000000000000000000000000000A27E14";
 
-function getArtelaConfig(): { nodeUrl: string; privateKey: string } {
+function getArtelaConfig(network: string = 'artela'): { nodeUrl: string; privateKey: string } {
   const baseDir = process.cwd();
   const configPath = path.join(baseDir, 'hardhat.config.js');
   if (!fs.existsSync(configPath)) {
@@ -13,18 +13,22 @@ function getArtelaConfig(): { nodeUrl: string; privateKey: string } {
     process.exit(0);
   }
   const config = require(configPath);
-  const nodeUrl = config.networks.artela?.url;
-  if (!nodeUrl) {
-    console.log("Artela Node URL is not configured in hardhat.config.js. Please set it.");
+  const networkConfig = config.networks[network];
+  if (!networkConfig) {
+    console.log(`Network ${network} is not configured in hardhat.config.js. Please set it.`);
     process.exit(0);
   }
-  const accounts = config.networks.artela.accounts;
+  const nodeUrl = networkConfig.url;
+  if (!nodeUrl) {
+    console.log(`Node URL for network ${network} is not configured in hardhat.config.js. Please set it.`);
+    process.exit(0);
+  }
+  const accounts = networkConfig.accounts;
   if (!accounts) {
-    console.log("Artela accounts are not configured in hardhat.config.js. Please set them.");
+    console.log(`Accounts for network ${network} are not configured in hardhat.config.js. Please set them.`);
     process.exit(0);
   }
   const privateKey = accounts[0];
-
   return { nodeUrl, privateKey };
 }
 
@@ -78,10 +82,10 @@ console.log(`Running command: ${command} ${args.join(' ')}`);
 }
 
 export async function deployAspect(
-  properties: string | null, joinPoints: Array<string> | null, wasmPath: string, gas: string
+  properties: string | null, joinPoints: Array<string> | null, wasmPath: string, gas: string, network: string = 'artela'
 ) {
   // TODO: gas nullable for default value
-  const { nodeUrl, privateKey } = getArtelaConfig();
+  const { nodeUrl, privateKey } = getArtelaConfig(network);
   const web3 = new Web3(nodeUrl);
   let gasPrice = await web3.eth.getGasPrice();
   let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
@@ -136,9 +140,9 @@ export async function deployAspect(
   return aspectID;
 }
 
-export async function bindAspect(contractAddress: string, aspectId: string, gas: string) {
+export async function bindAspect(contractAddress: string, aspectId: string, gas: string, network: string = 'artela') {
   // TODO: gas nullable for default value
-  const { nodeUrl, privateKey } = getArtelaConfig();
+  const { nodeUrl, privateKey } = getArtelaConfig(network);
   const web3 = new Web3(nodeUrl);
   let gasPrice = await web3.eth.getGasPrice();
   let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
@@ -165,9 +169,9 @@ export async function bindAspect(contractAddress: string, aspectId: string, gas:
   console.log("== aspect bind success ==");
 }
 
-export async function unbindAspect(contractAddress: string, aspectId: string, gas: string) {
+export async function unbindAspect(contractAddress: string, aspectId: string, gas: string, network: string = 'artela') {
   // TODO: gas nullable for default value
-  const { nodeUrl, privateKey } = getArtelaConfig();
+  const { nodeUrl, privateKey } = getArtelaConfig(network);
   const web3 = new Web3(nodeUrl);
   let gasPrice = await web3.eth.getGasPrice();
   let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());

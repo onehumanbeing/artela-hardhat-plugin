@@ -2,6 +2,7 @@
 /install
 /example/build
 # Logs
+tmp
 logs
 *.log
 npm-debug.log*
