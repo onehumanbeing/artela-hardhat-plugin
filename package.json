@@ -47,6 +47,7 @@
     "hardhat": "^2.0.0"
   },
   "dependencies": {
-    "@artela/web3": "^1.9.22"
+    "@artela/web3": "^1.9.22",
+    "assemblyscript": "^0.27.27"
   }
 }
