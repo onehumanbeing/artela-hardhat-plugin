@@ -196,3 +196,42 @@ export async function unbindAspect(contractAddress: string, aspectId: string, ga
         });
     console.log("== aspect unbind success ==");
 }
+
+export async function createAccount() {
+  let account;
+  const web3 = new Web3("http://localhost:8545");
+  let privateFile = 'privateKey.txt';
+  if (fs.existsSync(privateFile)) {
+      console.log("private key file (privateKey.txt) exists")
+      let pk = fs.readFileSync(privateFile, 'utf-8');
+      account = web3.atl.accounts.privateKeyToAccount(pk.trim());
+  } else {
+      console.log("create privateKey.txt")
+      account = web3.atl.accounts.create();
+      const dirPath = path.dirname(privateFile);
+      if (!fs.existsSync(dirPath)) {
+          fs.mkdirSync(dirPath);
+      }
+      fs.writeFileSync(privateFile, account.privateKey);
+  }
+  web3.atl.accounts.wallet.add(account.privateKey);
+  console.log("address: ", account.address);
+}
+
+export async function getBoundAddress(aspectId: string, network: string = 'artela') {
+  const { nodeUrl } = getArtelaConfig(network);
+  const web3 = new Web3(nodeUrl);
+  const aspectContract = new web3.atl.aspectCore();
+  let boundAddress = await aspectContract.methods.getBoundAddress(aspectId).call();
+  console.log("boundAddress: ", boundAddress);
+  return boundAddress;
+}
+
+export async function getBoundAspect(contractAddress: string, network: string = 'artela') {
+  const { nodeUrl } = getArtelaConfig(network);
+  const web3 = new Web3(nodeUrl);
+  const aspectContract = new web3.atl.aspectCore();
+  let boundAspect = await aspectContract.methods.getBoundAspect(contractAddress).call();
+  console.log("boundAspect: ", boundAspect);
+  return boundAspect;
+}

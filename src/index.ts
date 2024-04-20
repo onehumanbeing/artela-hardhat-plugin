@@ -3,9 +3,7 @@ import { lazyObject } from "hardhat/plugins";
 import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
 import path from "path";
 import { spawn } from "child_process";
-import { compileAspect, deployAspect } from "./internal/aspect";
-
-import { ExampleHardhatRuntimeEnvironmentField } from "./ExampleHardhatRuntimeEnvironmentField";
+import { compileAspect, deployAspect, createAccount, getBoundAddress, getBoundAspect } from "./internal/aspect";
 // This import is needed to let the TypeScript compiler know that it should include your type
 // extensions in your npm package's types file.
 import "./type-extensions";
@@ -80,3 +78,20 @@ task("deploy-aspect", "Deploys an aspect")
   .setAction(async (taskArgs, hre) => {
     await deployAspect(taskArgs.properties, taskArgs.joinpoints, taskArgs.wasm, taskArgs.gas, taskArgs.network);
 });
+
+task("create-account", "Creates an account")
+  .setAction(async (taskArgs, hre) => {
+    await createAccount();
+  });
+
+task("get-bound-address", "Gets the address bound to an aspect")
+  .addParam("aspectId", "The ID of the aspect")
+  .setAction(async (taskArgs, hre) => {
+    await getBoundAddress(taskArgs.aspectId, taskArgs.network);
+  });
+
+task("get-bound-aspect", "Gets the aspect bound to an address")
+  .addParam("contractAddress", "The address of the contract")
+  .setAction(async (taskArgs, hre) => {
+    await getBoundAspect(taskArgs.contractAddress, taskArgs.network);
+  });
