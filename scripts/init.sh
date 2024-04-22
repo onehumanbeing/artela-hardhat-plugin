@@ -1,3 +1,18 @@
+#!/bin/bash
+
+if [ -d "aspect" ]; then
+    echo "Directory 'aspect' already exists. Ignoring..."
+else
+    mkdir aspect
+    cat << EOF > aspect/tsconfig.json
+{
+    "extends": "assemblyscript/std/assembly.json",
+    "include": [
+        "./**/*.ts"
+    ]
+}
+EOF    
+    cat << EOF > aspect/index.ts
 import {
     allocate,
     entryPoint,
@@ -19,12 +34,10 @@ class StoreAspect
 
     preTxExecute(input: PreTxExecuteInput): void {
         //for smart contract call
-        sys.log("preTxExecute");
         sys.aspect.transientStorage.get<string>('ToContract').set<string>('HelloWorld');
     }
 
     postTxExecute(input: PostTxExecuteInput): void {
-        sys.log("postTxExecute");
         const to = uint8ArrayToHex(input.tx!.to);
         let txData = sys.hostApi.runtimeContext.get("tx.data");
         const txDataPt = Protobuf.decode<BytesData>(txData, BytesData.decode);
@@ -36,6 +49,7 @@ class StoreAspect
             sys.require(value == "HelloAspect", "failed to get value by contract setting.");
         }
     }
+
 }
 
 // 2.register aspect Instance
@@ -44,3 +58,6 @@ entryPoint.setAspect(aspect);
 
 // 3.must export it
 export {execute, allocate};
+EOF
+    echo "Directory 'aspect' created."
+fi

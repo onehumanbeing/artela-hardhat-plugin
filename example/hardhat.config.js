@@ -19,8 +19,6 @@ task("accounts", "Prints the list of accounts", async () => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-// TODO: divide mainnet and testnet
-// TODO: add local network
 module.exports = {
   solidity: "0.8.7",
   networks: {
@@ -30,7 +28,7 @@ module.exports = {
     },
     local: {
       url: "http://127.0.0.1:8545",
-      accounts: ["0xc5e3059ac8e54e415e3d81831fc24f292f825ae3d2690bab97d3e3c80065046e"],
+      accounts: [process.env.PRIVATEKEY_LOCAL],
     }
   }
 };

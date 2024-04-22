@@ -1,36 +1,12 @@
 import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
+
+import { getArtelaConfig, getExplorerUrl } from './utils';
+
 const Web3 = require("@artela/web3");
 const ARTELA_ADDR = "0x0000000000000000000000000000000000A27E14";
 const ASPECT_ADDR = "0x0000000000000000000000000000000000A27E14";
-
-function getArtelaConfig(network: string = 'artela'): { nodeUrl: string; privateKey: string } {
-  const baseDir = process.cwd();
-  const configPath = path.join(baseDir, 'hardhat.config.js');
-  if (!fs.existsSync(configPath)) {
-    console.log("hardhat.config.js does not exist. Please create it.");
-    process.exit(0);
-  }
-  const config = require(configPath);
-  const networkConfig = config.networks[network];
-  if (!networkConfig) {
-    console.log(`Network ${network} is not configured in hardhat.config.js. Please set it.`);
-    process.exit(0);
-  }
-  const nodeUrl = networkConfig.url;
-  if (!nodeUrl) {
-    console.log(`Node URL for network ${network} is not configured in hardhat.config.js. Please set it.`);
-    process.exit(0);
-  }
-  const accounts = networkConfig.accounts;
-  if (!accounts) {
-    console.log(`Accounts for network ${network} are not configured in hardhat.config.js. Please set them.`);
-    process.exit(0);
-  }
-  const privateKey = accounts[0];
-  return { nodeUrl, privateKey };
-}
 
 /**
  * Compiles an AssemblyScript file.
@@ -39,7 +15,7 @@ function getArtelaConfig(network: string = 'artela'): { nodeUrl: string; private
  * @param {string} target The compilation target: 'debug' or 'release'.
  * @param {string} output The path to the output file.
  */
-export function compileAspect(entryFile = "aspect/index.ts", target = "debug", output: string | null) {
+export async function compileAspect(entryFile = "aspect/index.ts", target = "debug", output: string | null) {
   const filename = path.basename(entryFile, path.extname(entryFile));
   if (!output) {
     if (target === 'release') {
@@ -86,6 +62,7 @@ export async function deployAspect(
 ) {
   // TODO: gas nullable for default value
   const { nodeUrl, privateKey } = getArtelaConfig(network);
+  if(!privateKey) return;
   const web3 = new Web3(nodeUrl);
   let gasPrice = await web3.eth.getGasPrice();
   let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
@@ -125,24 +102,24 @@ export async function deployAspect(
     gas: parseInt(gas) || 9000000
   }
   let signedTx = await web3.atl.accounts.signTransaction(tx, sender.privateKey);
-  console.log("sending signed transaction...");
+  console.log("deployAspect: sending signed transaction...");
   let ret = await web3.atl.sendSignedTransaction(signedTx.rawTransaction)
     .on('receipt', (receipt: any) => {
-      console.log(receipt);
+      console.log("receipt:", receipt);
+      const explorerUrl = getExplorerUrl(receipt.transactionHash, network);
+      if (explorerUrl) {
+        console.log(`View the transaction on the explorer: ${explorerUrl}`);
+      }
     });
   let aspectID = ret.aspectAddress;
-  console.log("ret: ", ret);
-  // TODO: save aspectID locally
-  // TODO: add explorer view
-  // TODO: support explorer verify
-  // https://betanet-scan.artela.network/tx/0x8c56c4903fd039a5c54f1b0e8111d5b5d6ba745fe7aec78961b31809c637206f
-  console.log("== deploy aspectID ==", aspectID)
+  console.log("aspectID:", aspectID)
   return aspectID;
 }
 
 export async function bindAspect(contractAddress: string, aspectId: string, gas: string, network: string = 'artela') {
   // TODO: gas nullable for default value
   const { nodeUrl, privateKey } = getArtelaConfig(network);
+  if(!privateKey) return;
   const web3 = new Web3(nodeUrl);
   let gasPrice = await web3.eth.getGasPrice();
   let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
@@ -161,17 +138,22 @@ export async function bindAspect(contractAddress: string, aspectId: string, gas:
       gas: parseInt(gas) || 9000000
   }
   let signedTx = await web3.eth.accounts.signTransaction(tx, sender.privateKey);
-  console.log("sending signed transaction...");
+  console.log("bindAspect: sending signed transaction...");
   await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
       .on('receipt', (receipt: any) => {
-          console.log(receipt);
+          console.log("receipt:", receipt);
+          const explorerUrl = getExplorerUrl(receipt.transactionHash, network);
+          if (explorerUrl) {
+            console.log(`View the transaction on the explorer: ${explorerUrl}`);
+          }
       });
-  console.log("== aspect bind success ==");
+  console.log("Aspect bind success");
 }
 
 export async function unbindAspect(contractAddress: string, aspectId: string, gas: string, network: string = 'artela') {
   // TODO: gas nullable for default value
   const { nodeUrl, privateKey } = getArtelaConfig(network);
+  if(!privateKey) return;
   const web3 = new Web3(nodeUrl);
   let gasPrice = await web3.eth.getGasPrice();
   let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
@@ -192,9 +174,13 @@ export async function unbindAspect(contractAddress: string, aspectId: string, ga
     const signedTx = await web3.eth.accounts.signTransaction(tx, sender.privateKey);
     await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
         .on('receipt', (receipt: any) => {
-            console.log(receipt);
+          console.log("receipt:", receipt);
+          const explorerUrl = getExplorerUrl(receipt.transactionHash, network);
+          if (explorerUrl) {
+            console.log(`View the transaction on the explorer: ${explorerUrl}`);
+          }
         });
-    console.log("== aspect unbind success ==");
+    console.log("Aspect unbind success");
 }
 
 export async function createAccount() {
@@ -222,7 +208,7 @@ export async function getBoundAddress(aspectId: string, network: string = 'artel
   const { nodeUrl } = getArtelaConfig(network);
   const web3 = new Web3(nodeUrl);
   const aspectContract = new web3.atl.aspectCore();
-  let boundAddress = await aspectContract.methods.getBoundAddress(aspectId).call();
+  let boundAddress = await aspectContract.methods.boundAddressesOf(aspectId).call();
   console.log("boundAddress: ", boundAddress);
   return boundAddress;
 }
@@ -231,7 +217,7 @@ export async function getBoundAspect(contractAddress: string, network: string = 
   const { nodeUrl } = getArtelaConfig(network);
   const web3 = new Web3(nodeUrl);
   const aspectContract = new web3.atl.aspectCore();
-  let boundAspect = await aspectContract.methods.getBoundAspect(contractAddress).call();
+  let boundAspect = await aspectContract.methods.aspectsOf(contractAddress).call();
   console.log("boundAspect: ", boundAspect);
   return boundAspect;
 }

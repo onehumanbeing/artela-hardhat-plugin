@@ -4,21 +4,20 @@
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 const hre = require("hardhat");
-import { bindAspect, deployAspect } from "../../dist/src/internal/aspect";
+import { bindAspect, deployAspect, getBoundAddress, getBoundAspect } from "../../dist/src/internal/aspect";
 
 async function main() {
   const network = hre.network.name;
-  const MyToken = await hre.ethers.getContractFactory("MyToken");
+  const Storage = await hre.ethers.getContractFactory("Storage");
   const initialSupply = "1000000000000000000000";
   console.log("start deploy")
-  const token = await MyToken.deploy(initialSupply, { gasLimit: 9000000 }); // , { gasLimit: 9000000 } when local ??
+  const token = await Storage.deploy({ gasLimit: 9000000 });
   await token.deployed();
-  console.log("MyToken deployed to:", token.address);
-  // aspect deploy
-  const aspect = await deployAspect("[]", ["preContractCall"], "build/index_debug.wasm", "", network);
-  console.log("Aspect deployed to:", aspect);
-  // bind
-  const bind = await bindAspect(token.address, aspect, "9000000", network);
+  const aspect = await deployAspect("[]", ["preTxExecute", "postTxExecute"], "build/index_debug.wasm", "", network);
+  // const bind = await bindAspect(token.address, aspect, "9000000", network);
+  console.log("deployed aspect", aspect, "contract: ", token.address);
+  // const boundAddress = await getBoundAddress(aspect, network);
+  // const boundAspect = await getBoundAspect(token.address, network);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
@@ -28,4 +27,4 @@ main()
   .catch(error => {
     console.error(error);
     process.exit(1);
-  });
+});

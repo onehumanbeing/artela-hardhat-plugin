@@ -77,6 +77,10 @@ commands
 npx hardhat compile # compile solidity
 npx hardhat compile-aspect # compile the aspect, default aspect/index.ts
 npx hardhat deploy-aspect --joinpoints preContractCall --wasm build/index_debug.wasm # deploy the aspect
+
+npx hardhat call-contract --contract Storage --address $CONTRACT  --method getAspectContext --network artela  $ASPECT ToContract
+npx hardhat get-balance --address 0x376b40c51E96AbCE9F00a2d7aAf6b6e5519a7898
+npx hardhat transfer --from  0x376b40c51E96AbCE9F00a2d7aAf6b6e5519a7898 --to 0xe5107dee9CcC8054210FF6129cE15Eaa5bbcB1c0 --amount 0.01 
 ```
 
 deploy smart contract
@@ -144,10 +148,9 @@ initail test wallet with balance
 * [x] deploy contract and aspect in scripts
 * [x] Integrate @artela/aspect-tool commands
 * [x] Use custom genesis.json to start local node, add test wallet account with initail balance
-* [ ] Add commands like: check account balance
+* [x] Add commands like: check account balance
 * [ ] Contract send/call
+* [ ] Finilize example project
 * [ ] Publish NPM package 0.0.0
 * [ ] Developer usage documentation (readthedocs)
-* [ ] Simple deployment for aspects and contracts in scripts, add default params
 * [ ] Params verification
-* [ ] Finilize example project

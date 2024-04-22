@@ -18,7 +18,7 @@
     "lint": "tslint --config tslint.json --project tsconfig.json",
     "test": "mocha --exit --recursive 'test/**/*.test.ts'",
     "build": "tsc",
-    "postbuild": "cp ./scripts/local_node.sh ./dist/src/local_node.sh",
+    "postbuild": "cd scripts && sh install.sh",
     "watch": "tsc -w",
     "prepublishOnly": "npm run build"
   },
