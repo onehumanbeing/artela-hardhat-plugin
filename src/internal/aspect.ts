@@ -139,7 +139,7 @@ export async function bindAspect(contractAddress: string, aspectId: string, gas:
   }
   let signedTx = await web3.eth.accounts.signTransaction(tx, sender.privateKey);
   console.log("bindAspect: sending signed transaction...");
-  await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+  let ret = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
       .on('receipt', (receipt: any) => {
           console.log("receipt:", receipt);
           const explorerUrl = getExplorerUrl(receipt.transactionHash, network);
@@ -172,7 +172,7 @@ export async function unbindAspect(contractAddress: string, aspectId: string, ga
         gas: parseInt(gas) || 9000000
       }
     const signedTx = await web3.eth.accounts.signTransaction(tx, sender.privateKey);
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    let ret = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
         .on('receipt', (receipt: any) => {
           console.log("receipt:", receipt);
           const explorerUrl = getExplorerUrl(receipt.transactionHash, network);
@@ -208,16 +208,16 @@ export async function getBoundAddress(aspectId: string, network: string = 'artel
   const { nodeUrl } = getArtelaConfig(network);
   const web3 = new Web3(nodeUrl);
   const aspectContract = new web3.atl.aspectCore();
-  let boundAddress = await aspectContract.methods.boundAddressesOf(aspectId).call();
-  console.log("boundAddress: ", boundAddress);
-  return boundAddress;
+  let boundAddresses= await aspectContract.methods["boundAddressesOf"](aspectId).call()
+  console.log("boundAddress: ", boundAddresses);
+  return boundAddresses;
 }
 
 export async function getBoundAspect(contractAddress: string, network: string = 'artela') {
   const { nodeUrl } = getArtelaConfig(network);
   const web3 = new Web3(nodeUrl);
   const aspectContract = new web3.atl.aspectCore();
-  let boundAspect = await aspectContract.methods.aspectsOf(contractAddress).call();
+  let boundAspect= await aspectContract.methods["aspectsOf"](contractAddress).call()
   console.log("boundAspect: ", boundAspect);
   return boundAspect;
 }

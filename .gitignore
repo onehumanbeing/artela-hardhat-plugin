@@ -1,6 +1,7 @@
 /dist
 /install
 /example/build
+example/install/
 /example/privateKey.txt
 # Logs
 tmp

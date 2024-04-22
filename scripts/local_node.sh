@@ -11,6 +11,7 @@ fi
 if ! command -v jq &> /dev/null
 then
     echo "jq does not exist, please visit https://jqlang.github.io/jq/download/ for installation instructions."
+    exit 1
 fi
 
 # Check if artelad is installed
@@ -23,19 +24,25 @@ then
 
     # Clone the artela repository
     if [ ! -d "artela" ]; then
-        git clone https://github.com/artela-network/artela.git
+        git clone --branch v0.4.6-beta --depth 1 https://github.com/artela-network/artela.git
         cd artela
     else
         echo "artela already exists"
         cd artela
     fi
     # Build the project
+    # try go clean -modcache if error happens
     make clean && make
 
     # Add ./build/ to PATH, here we move it to /usr/local/bin which is part of PATH in most systems
     # Note: This might require sudo permission
     echo "Installing artelad to /usr/local/bin/, requires your password."
     sudo cp ./build/* /usr/local/bin/
+    if ! command -v artelad &> /dev/null
+    then
+        echo "Installation failed, please try again."
+        exit 1
+    fi
 fi
 # bash init.sh
 # configure the network start
@@ -177,4 +184,4 @@ fi
 
 echo "Success"
 # run `artelad start` to launch single node network
-artelad start
+artelad start --log_level trace --trace  

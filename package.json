@@ -1,6 +1,6 @@
 {
   "name": "artela-hardhat-plugin",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Hardhat plugin for Artela Network",
   "repository": "github:nomiclabs/hardhat-ts-plugin-boilerplate",
   "author": "Henry Yuan<hy2878@nyu.edu>",

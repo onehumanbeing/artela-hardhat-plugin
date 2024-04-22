@@ -1,5 +1,5 @@
 import { getArtelaConfig } from './utils';
-import { Artifact, HardhatRuntimeEnvironment } from "hardhat/types";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const Web3 = require("@artela/web3");
 
