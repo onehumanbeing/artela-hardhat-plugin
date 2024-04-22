@@ -1,13 +1,10 @@
 import { extendConfig, extendEnvironment, task } from "hardhat/config";
-import { lazyObject } from "hardhat/plugins";
 import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
 import path from "path";
 import { spawn } from "child_process";
 import { compileAspect, deployAspect, createAccount, getBoundAddress, getBoundAspect } from "./internal/aspect";
 import { getBalance, transfer, callContract } from "./internal/evm";
 import { getExplorerUrl } from "./internal/utils";
-// This import is needed to let the TypeScript compiler know that it should include your type
-// extensions in your npm package's types file.
 import "./type-extensions";
 
 extendConfig(

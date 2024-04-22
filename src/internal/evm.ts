@@ -1,6 +1,5 @@
-import { getArtelaConfig } from './utils';
-import { HardhatRuntimeEnvironment } from "hardhat/types";
-
+const { getArtelaConfig } = require('./utils');
+const { HardhatRuntimeEnvironment } = require("hardhat/types");
 const Web3 = require("@artela/web3");
 
 export async function getBalance(address: string, network: string = 'artela') {
@@ -28,7 +27,7 @@ export async function transfer(from: string, to: string, amount: string, network
     // console.log(`Transaction sent with hash ${receipt.transactionHash}`);
   }
 
-export async function callContract(hre: HardhatRuntimeEnvironment, name: string, contractAddress: string, method: string, args: Array<any> = [], network: string = 'artela') {    
+export async function callContract(hre: typeof HardhatRuntimeEnvironment, name: string, contractAddress: string, method: string, args: Array<any> = [], network: string = 'artela') {    
     const { nodeUrl } = getArtelaConfig(network);
     const web3 = new Web3(nodeUrl);
     const artifact = await hre.artifacts.readArtifact(name);

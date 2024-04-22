@@ -68,6 +68,10 @@ npx hardhat artela
 
 ### Optional: run devnet
 
+#### prerequisites
+
+install go, [jq](https://jqlang.github.io/jq/download/)
+
 ```
 npx hardhat devnet
 ```
@@ -150,5 +154,20 @@ npx hardhat run scripts/deploy.ts --network local
 
 # testnet
 npx hardhat run scripts/deploy.ts --network artela
+```
 
+## Commands
+
+```
+npx hardhat compile # compile solidity
+npx hardhat compile-aspect # compile the aspect, default aspect/index.ts
+npx hardhat deploy-aspect --joinpoints preContractCall --wasm build/index_debug.wasm # deploy the aspect
+npx hardhat create-account # create new account
+npx hardhat devnet # run local devnet
+npx hardhat artela # setup project directory for aspect
+npx hardhat call --contract Storage --address $CONTRACT  --method getAspectContext --network artela  $ASPECT ToContract # call contract method
+npx hardhat get-balance --address 0x376b40c51E96AbCE9F00a2d7aAf6b6e5519a7898 # get balance of account address
+npx hardhat transfer --from  0x376b40c51E96AbCE9F00a2d7aAf6b6e5519a7898 --to 0xe5107dee9CcC8054210FF6129cE15Eaa5bbcB1c0 --amount 0.01 # transfer amount from one account to another
+npx hardhat get-bound-address --aspect $ASPECT --network artela # get bound address of aspect
+npx hardhat get-bound-aspect --contract $CONTRACT --network artela # get bound aspect of contract
 ```

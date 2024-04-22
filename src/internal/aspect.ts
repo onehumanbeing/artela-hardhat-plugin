@@ -1,8 +1,7 @@
-import { spawn } from 'child_process';
-import path from 'path';
-import fs from 'fs';
-
-import { getArtelaConfig, getExplorerUrl } from './utils';
+const { spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+const { getArtelaConfig, getExplorerUrl } = require('./utils');
 
 const Web3 = require("@artela/web3");
 const ARTELA_ADDR = "0x0000000000000000000000000000000000A27E14";
@@ -36,17 +35,17 @@ const args = ['asc', entryFile, '--target', target, '-o', output];
 
 console.log(`Running command: ${command} ${args.join(' ')}`);
   const childProcess = spawn(command, args);
-  childProcess.stdout.on('data', (data) => {
+  childProcess.stdout.on('data', (data: any) => {
     console.log('stdout event triggered.');
     console.log(`stdout: ${data}`);
   });
 
-  childProcess.stderr.on('data', (data) => {
+  childProcess.stderr.on('data', (data: any) => {
     console.log('stderr event triggered.');
     console.error(`stderr: ${data}`);
   });
 
-  childProcess.on('close', (code) => {
+  childProcess.on('close', (code: any) => {
     console.log('close event triggered.');
     if (code !== 0) {
       console.error(`Failed to compile AssemblyScript: process exited with code ${code}`);

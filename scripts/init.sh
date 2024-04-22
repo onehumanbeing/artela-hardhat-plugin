@@ -61,3 +61,9 @@ export {execute, allocate};
 EOF
     echo "Directory 'aspect' created."
 fi
+
+if [ ! -f .env ]; then
+    echo "PRIVATEKEY=YOURPRIVATEKEY" >> .env
+    echo "PRIVATEKEY_LOCAL=0x7b13c9f33b3b5663700297471733a88796fccc33b0da8e9b813f7a8422533304" >> .env
+    echoi "File '.env' created."
+fi

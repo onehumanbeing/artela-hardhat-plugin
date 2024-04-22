@@ -1,12 +1,15 @@
-import path from 'path';
-import fs from 'fs';
+const path = require('path');
+const fs = require('fs');
 
 export function getArtelaConfig(network: string = 'artela'): { nodeUrl: string; privateKey: string | null } {
     const baseDir = process.cwd();
-    const configPath = path.join(baseDir, 'hardhat.config.js');
+    let configPath = path.join(baseDir, 'hardhat.config.js');
     if (!fs.existsSync(configPath)) {
-      console.log("hardhat.config.js does not exist. Please create it.");
-      process.exit(0);
+      configPath = path.join(baseDir, 'hardhat.config.ts');
+      if (!fs.existsSync(configPath)) {
+        console.log("hardhat.config.js or hardhat.config.ts does not exist. Please create it.");
+        process.exit(0);
+      }
     }
     const config = require(configPath);
     const networkConfig = config.networks[network];
