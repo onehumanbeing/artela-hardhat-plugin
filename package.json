@@ -1,8 +1,8 @@
 {
-  "name": "artela-hardhat-plugin-beta",
+  "name": "artela-hardhat-plugin",
   "version": "0.0.0",
   "description": "Hardhat plugin for Artela Network",
-  "repository": "github:nomiclabs/hardhat-ts-plugin-boilerplate",
+  "repository": "github.com/BuidlerHouse/artela-hardhat-plugin",
   "author": "Henry Yuan<hy2878@nyu.edu>",
   "license": "MIT",
   "main": "dist/src/index.js",
@@ -11,7 +11,8 @@
     "ethereum",
     "smart-contracts",
     "hardhat",
-    "hardhat-plugin"
+    "hardhat-plugin",
+    "artela-network"
   ],
   "scripts": {
     "lint:fix": "prettier --write 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' && tslint --fix --config tslint.json --project tsconfig.json",
@@ -47,7 +48,11 @@
     "hardhat": "^2.0.0"
   },
   "dependencies": {
+    "@artela/aspect-libs": "^0.0.33",
     "@artela/web3": "^1.9.22",
-    "assemblyscript": "^0.27.27"
+    "assemblyscript": "^0.27.27",
+    "dotenv": "^16.4.5",
+    "@nomicfoundation/hardhat-ethers": "^3.0.5",
+    "ethers": "^6.12.0"
   }
 }

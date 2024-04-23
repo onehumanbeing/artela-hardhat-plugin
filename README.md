@@ -46,8 +46,9 @@ Just run `npm run build` ️👷
 * [x] Use custom genesis.json to start local node, add test wallet account with initail balance
 * [x] Add commands like: check account balance
 * [x] Contract send/call
-* [x] Finilize example project
+* [ ] Finilize example project
 * [ ] Publish NPM package 0.0.0 (Progress: 50%)
 * [ ] Developer usage documentation (readthedocs)
 * [ ] Params verification
 * [ ] Add more examples
+* [ ] built test based on artela devnet

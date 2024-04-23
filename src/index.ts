@@ -57,7 +57,7 @@ task("devnet", "run artela devnet local")
     });
 });
 
-task("artela", "setup artela directory")
+task("setup", "setup artela directory")
   .setAction(async () => {
     const scriptPath = path.join(__dirname, 'init.sh');
     const build = spawn('bash', [scriptPath], { stdio: 'inherit' });
@@ -89,7 +89,7 @@ task("deploy-aspect", "Deploys an aspect")
   .addOptionalParam("wasm", "The path to the wasm file")
   .addOptionalParam("gas", "The gas for the transaction")
   .setAction(async (taskArgs, hre) => {
-    await deployAspect(taskArgs.properties, taskArgs.joinpoints, taskArgs.wasm, taskArgs.gas, taskArgs.network);
+    await deployAspect(taskArgs.properties, taskArgs.joinpoints, taskArgs.wasm, taskArgs.gas, hre.network.name);
 });
 
 task("create-account", "Creates an account")
@@ -100,19 +100,19 @@ task("create-account", "Creates an account")
 task("get-bound-address", "Gets the address bound to an aspect")
   .addParam("aspectId", "The ID of the aspect")
   .setAction(async (taskArgs, hre) => {
-    await getBoundAddress(taskArgs.aspectId, taskArgs.network);
+    await getBoundAddress(taskArgs.aspectId, hre.network.name);
 });
 
 task("get-bound-aspect", "Gets the aspect bound to an address")
   .addParam("contractAddress", "The address of the contract")
   .setAction(async (taskArgs, hre) => {
-    await getBoundAspect(taskArgs.contractAddress, taskArgs.network);
+    await getBoundAspect(taskArgs.contractAddress, hre.network.name);
 });
 
 task("get-balance", "Get the balance of an address")
   .addParam("address", "The address to check")
   .setAction(async (taskArgs, hre) => {
-    const balance = await getBalance(taskArgs.address, taskArgs.network);
+    const balance = await getBalance(taskArgs.address, hre.network.name);
     console.log(`The balance of address ${taskArgs.address} is ${balance} ART.`);
   });
 
@@ -122,9 +122,9 @@ task("transfer", "Transfers ART from one address to another")
   .addParam("amount", "The amount to transfer")
   .addOptionalParam("gas", "The gas limit", "21000")
   .setAction(async (taskArgs, hre) => {
-    const txHash = await transfer(taskArgs.from, taskArgs.to, taskArgs.amount, taskArgs.network, taskArgs.gas);
+    const txHash = await transfer(taskArgs.from, taskArgs.to, taskArgs.amount, hre.network.name, taskArgs.gas);
     console.log(`Transaction sent with hash ${txHash}`);
-    const explorerUrl = getExplorerUrl(txHash, taskArgs.network);
+    const explorerUrl = getExplorerUrl(txHash, hre.network.name);
     if (explorerUrl) {
       console.log(`View the transaction on the explorer: ${explorerUrl}`);
     }
@@ -136,6 +136,6 @@ task("call", "Calls a method in a contract")
   .addParam("method", "The method to call")
   .addOptionalVariadicPositionalParam("args", "The arguments to pass to the method", [])
   .setAction(async (taskArgs, hre) => {
-    const result = await callContract(hre, taskArgs.contract, taskArgs.address, taskArgs.method, taskArgs.args, taskArgs.network);
+    const result = await callContract(hre, taskArgs.contract, taskArgs.address, taskArgs.method, taskArgs.args, hre.network.name);
     console.log(`Result: ${result}`);
   });

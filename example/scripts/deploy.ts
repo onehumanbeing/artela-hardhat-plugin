@@ -1,12 +1,7 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional 
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
 const hre = require("hardhat");
 import { bindAspect, deployAspect, getBoundAddress, getBoundAspect } from "../../dist/src/internal/aspect";
 
-async function test(contractAddress: string, aspectId: string) {
+async function testContract(contractAddress: string, aspectId: string) {
   const Contract = await hre.ethers.getContractAt("Storage", contractAddress);
   console.log("Get the aspect context");
   let validationData = await Contract.callStatic.getAspectContext(aspectId, "ToContract");
@@ -28,7 +23,7 @@ async function main() {
   console.log("deployed aspect", aspect, "contract: ", token.address);
   const boundAddress = await getBoundAddress(aspect, network);
   const boundAspect = await getBoundAspect(token.address, network);
-  await test(token.address, aspect);
+  await testContract(token.address, aspect);
   console.log("done")
 }
 
