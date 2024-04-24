@@ -69,7 +69,7 @@ export async function deployAspect(
   web3.eth.accounts.wallet.add(sender.privateKey);
   let propertiesArr = properties ? JSON.parse(properties) : [];
   let joinPointsArr = joinPoints || [];
-  const validJoinPoints = ['preContractCall', 'postContractCall', 'preTxExecute', 'postTxExecute', 'verifyTx'];
+  const validJoinPoints = ['PreContractCall', 'PostContractCall', 'PreTxExecute', 'PostTxExecute', 'VerifyTx'];
   for (const joinPoint of joinPointsArr) {
     if (!validJoinPoints.includes(joinPoint)) {
       console.log(`Invalid join point: ${joinPoint}`);

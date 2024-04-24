@@ -85,7 +85,6 @@ initail test wallet with balance
 | 0xf0B2Ad824e98d5A3245A9E3c85dda71D513C37d1 | 0xc5e3059ac8e54e415e3d81831fc24f292f825ae3d2690bab97d3e3c80065046e | art17ze2mqjwnr26xfz6nc7gthd8r4gncd73a585zw |
 | 0x2ABb8c7bf395326C2A3B489D3fDe844822e55ccf | 0x91c00a2cbf598cdb1173d06674d8ee7fea71437c196867f4d9a0088105f697c0 | art192acc7lnj5exc23mfzwnlh5yfq3w2hx06pkj0u |
 
-
 it will run a artela node at `http://127.0.0.1:8545`
 
 Copy Storage.sol in https://docs.artela.network/develop/guides/contract-via-aspect to contracts/Storage.sol
