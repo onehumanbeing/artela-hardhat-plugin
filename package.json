@@ -1,6 +1,6 @@
 {
   "name": "artela-hardhat-plugin",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Hardhat plugin for Artela Network",
   "repository": "github.com/BuidlerHouse/artela-hardhat-plugin",
   "author": "Henry Yuan<hy2878@nyu.edu>",
