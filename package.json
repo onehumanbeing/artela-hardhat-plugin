@@ -1,6 +1,6 @@
 {
   "name": "artela-hardhat-plugin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Hardhat plugin for Artela Network",
   "repository": "github.com/BuidlerHouse/artela-hardhat-plugin",
   "author": "Henry Yuan<hy2878@nyu.edu>",
@@ -49,10 +49,6 @@
   },
   "dependencies": {
     "@artela/aspect-libs": "^0.0.33",
-    "@artela/web3": "^1.9.22",
-    "assemblyscript": "^0.27.27",
-    "dotenv": "^16.4.5",
-    "@nomicfoundation/hardhat-ethers": "^3.0.5",
-    "ethers": "^6.12.0"
+    "@artela/web3": "^1.9.22"
   }
 }

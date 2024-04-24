@@ -195,4 +195,4 @@ artelad add-genesis-account $USERKEY4 100000000000000000000000000uart --keyring-
 
 echo "Success"
 # run `artelad start` to launch single node network
-artelad start --log_level $LOGLEVEL
+artelad start --pruning=nothing --log_level $LOGLEVEL --minimum-gas-prices=0.0001art --api.enable --json-rpc.api eth,txpool,personal,net,debug,web3,miner --api.enable

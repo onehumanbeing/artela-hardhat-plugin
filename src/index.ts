@@ -43,7 +43,7 @@ extendConfig(
 task("devnet", "run artela devnet local")
   .setAction(async () => {
     console.log("Running artela devnet local");
-    const scriptPath = path.join(__dirname, 'local_node.sh');
+    const scriptPath = path.join(__dirname, 'devnet.sh');
     const build = spawn('bash', [scriptPath], { stdio: 'inherit' });
     await new Promise((resolve, reject) => {
       build.on('close', (code) => {

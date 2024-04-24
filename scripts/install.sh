@@ -1,2 +1,2 @@
-cp local_node.sh ../dist/src/local_node.sh
+cp devnet.sh ../dist/src/devnet.sh
 cp init.sh ../dist/src/init.sh
