@@ -2,7 +2,13 @@ import { extendConfig, extendEnvironment, task } from "hardhat/config";
 import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
 import path from "path";
 import { spawn } from "child_process";
-import { compileAspect, deployAspect, createAccount, getBoundAddress, getBoundAspect } from "./internal/aspect";
+import {
+  compileAspect,
+  deployAspect,
+  createAccount,
+  getBoundAddress,
+  getBoundAspect,
+} from "./internal/aspect";
 import { getBalance, transfer, callContract } from "./internal/evm";
 import { getExplorerUrl } from "./internal/utils";
 import "./type-extensions";
@@ -40,40 +46,42 @@ extendConfig(
   }
 );
 
-task("devnet", "run artela devnet local")
-  .setAction(async () => {
-    console.log("Running artela devnet local");
-    const scriptPath = path.join(__dirname, 'devnet.sh');
-    const build = spawn('bash', [scriptPath], { stdio: 'inherit' });
-    await new Promise((resolve, reject) => {
-      build.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-        resolve(code);
-      });
-
-      build.on('error', (err) => {
-        reject(err);
-      });
+task("devnet", "run artela devnet local").setAction(async () => {
+  console.log("Running artela devnet local");
+  const scriptPath = path.join(__dirname, "devnet.sh");
+  const build = spawn("bash", [scriptPath], { stdio: "inherit" });
+  await new Promise((resolve, reject) => {
+    build.on("close", (code) => {
+      console.log(`child process exited with code ${code}`);
+      resolve(code);
     });
+
+    build.on("error", (err) => {
+      reject(err);
+    });
+  });
 });
 
-task("setup", "setup artela directory")
-  .setAction(async () => {
-    const scriptPath = path.join(__dirname, 'init.sh');
-    const build = spawn('bash', [scriptPath], { stdio: 'inherit' });
-    await new Promise((resolve, reject) => {
-      build.on('close', (code) => {
-        resolve(code);
-      });
-      build.on('error', (err) => {
-        reject(err);
-      });
+task("setup", "setup artela directory").setAction(async () => {
+  const scriptPath = path.join(__dirname, "init.sh");
+  const build = spawn("bash", [scriptPath], { stdio: "inherit" });
+  await new Promise((resolve, reject) => {
+    build.on("close", (code) => {
+      resolve(code);
     });
+    build.on("error", (err) => {
+      reject(err);
+    });
+  });
 });
 
 task("compile-aspect", "Compiles Aspect")
   .addOptionalParam("file", "The entry file to compile", "aspect/index.ts")
-  .addOptionalParam("target", "The compilation target: 'debug' or 'release'", "debug")
+  .addOptionalParam(
+    "target",
+    "The compilation target: 'debug' or 'release'",
+    "debug"
+  )
   .addOptionalParam("output", "The path to the output file")
   .setAction(async (taskArgs, hre) => {
     if (!["debug", "release"].includes(taskArgs.target)) {
@@ -89,31 +97,40 @@ task("deploy-aspect", "Deploys an aspect")
   .addOptionalParam("wasm", "The path to the wasm file")
   .addOptionalParam("gas", "The gas for the transaction")
   .setAction(async (taskArgs, hre) => {
-    await deployAspect(taskArgs.properties, taskArgs.joinpoints, taskArgs.wasm, taskArgs.gas, hre.network.name);
-});
+    await deployAspect(
+      taskArgs.properties,
+      taskArgs.joinpoints,
+      taskArgs.wasm,
+      taskArgs.gas,
+      hre.network.name
+    );
+  });
 
-task("create-account", "Creates an account")
-  .setAction(async (taskArgs, hre) => {
+task("create-account", "Creates an account").setAction(
+  async (taskArgs, hre) => {
     await createAccount();
-});
+  }
+);
 
 task("get-bound-address", "Gets the address bound to an aspect")
   .addParam("aspectId", "The ID of the aspect")
   .setAction(async (taskArgs, hre) => {
     await getBoundAddress(taskArgs.aspectId, hre.network.name);
-});
+  });
 
 task("get-bound-aspect", "Gets the aspect bound to an address")
   .addParam("contractAddress", "The address of the contract")
   .setAction(async (taskArgs, hre) => {
     await getBoundAspect(taskArgs.contractAddress, hre.network.name);
-});
+  });
 
 task("get-balance", "Get the balance of an address")
   .addParam("address", "The address to check")
   .setAction(async (taskArgs, hre) => {
     const balance = await getBalance(taskArgs.address, hre.network.name);
-    console.log(`The balance of address ${taskArgs.address} is ${balance} ART.`);
+    console.log(
+      `The balance of address ${taskArgs.address} is ${balance} ART.`
+    );
   });
 
 task("transfer", "Transfers ART from one address to another")
@@ -122,7 +139,13 @@ task("transfer", "Transfers ART from one address to another")
   .addParam("amount", "The amount to transfer")
   .addOptionalParam("gas", "The gas limit", "21000")
   .setAction(async (taskArgs, hre) => {
-    const txHash = await transfer(taskArgs.from, taskArgs.to, taskArgs.amount, hre.network.name, taskArgs.gas);
+    const txHash = await transfer(
+      taskArgs.from,
+      taskArgs.to,
+      taskArgs.amount,
+      hre.network.name,
+      taskArgs.gas
+    );
     console.log(`Transaction sent with hash ${txHash}`);
     const explorerUrl = getExplorerUrl(txHash, hre.network.name);
     if (explorerUrl) {
@@ -134,8 +157,29 @@ task("call", "Calls a method in a contract")
   .addParam("contract", "The name of the contract")
   .addParam("address", "The address of the contract")
   .addParam("method", "The method to call")
-  .addOptionalVariadicPositionalParam("args", "The arguments to pass to the method", [])
+  .addOptionalVariadicPositionalParam(
+    "args",
+    "The arguments to pass to the method",
+    []
+  )
   .setAction(async (taskArgs, hre) => {
-    const result = await callContract(hre, taskArgs.contract, taskArgs.address, taskArgs.method, taskArgs.args, hre.network.name);
+    const result = await callContract(
+      hre,
+      taskArgs.contract,
+      taskArgs.address,
+      taskArgs.method,
+      taskArgs.args,
+      hre.network.name
+    );
     console.log(`Result: ${result}`);
   });
+
+export {
+  compileAspect,
+  deployAspect,
+  bindAspect,
+  unbindAspect,
+  createAccount,
+  getBoundAddress,
+  getBoundAspect,
+} from "./internal/aspect";
