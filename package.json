@@ -1,7 +1,10 @@
 {
   "name": "artela-hardhat-plugin",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Hardhat plugin for Artela Network",
+  "exports": {
+    "./aspect": "./dist/src/internal/aspect.js"
+  },
   "repository": "github.com/BuidlerHouse/artela-hardhat-plugin",
   "author": "Henry Yuan<hy2878@nyu.edu>",
   "license": "MIT",
