@@ -63,14 +63,26 @@ export async function compileAspect(
   });
 }
 
+export enum JoinPoint {
+  PreContractCall = "preContractCall",
+  PostContractCall = "postContractCall",
+  PreTxExecute = "preTxExecute",
+  PostTxExecute = "postTxExecute",
+  VerifyTx = "verifyTx",
+}
+
+export type AspectProperty = {
+  key: string;
+  value: string;
+};
+
 export async function deployAspect(
-  properties: string | null,
-  joinPoints: Array<string> | null,
+  properties: AspectProperty[] | null,
+  joinPoints: Array<JoinPoint> | null,
   wasmPath: string,
-  gas: string,
+  gas: string | null = "9000000",
   network: string = "artela"
 ) {
-  // TODO: gas nullable for default value
   const { nodeUrl, privateKey } = getArtelaConfig(network);
   if (!privateKey) return;
   const web3 = new Web3(nodeUrl);
@@ -78,21 +90,15 @@ export async function deployAspect(
   let sender = web3.eth.accounts.privateKeyToAccount(privateKey.trim());
   console.log("from address: ", sender.address);
   web3.eth.accounts.wallet.add(sender.privateKey);
-  let propertiesArr = properties ? JSON.parse(properties) : [];
+
+  let propertiesArr = properties || [];
   let joinPointsArr = joinPoints || [];
-  const validJoinPoints = [
-    "preContractCall",
-    "postContractCall",
-    "preTxExecute",
-    "postTxExecute",
-    "verifyTx",
-  ];
-  for (const joinPoint of joinPointsArr) {
-    if (!validJoinPoints.includes(joinPoint)) {
-      console.log(`Invalid join point: ${joinPoint}`);
-      process.exit(0);
+  joinPointsArr.forEach((joinPoint) => {
+    if (!Object.values(JoinPoint).includes(joinPoint)) {
+      throw new Error(`Invalid join point: ${joinPoint}`);
     }
-  }
+  });
+
   //read wasm code
   let aspectCode = "";
   aspectCode = fs.readFileSync(wasmPath, { encoding: "hex" });
@@ -115,7 +121,7 @@ export async function deployAspect(
     data: deploy.encodeABI(),
     to: ARTELA_ADDR,
     gasPrice,
-    gas: parseInt(gas) || 9000000,
+    gas: parseInt(gas || "9000000"),
   };
   let signedTx = await web3.atl.accounts.signTransaction(tx, sender.privateKey);
   console.log("deployAspect: sending signed transaction...");

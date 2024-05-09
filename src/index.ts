@@ -182,4 +182,6 @@ export {
   createAccount,
   getBoundAddress,
   getBoundAspect,
+  JoinPoint,
+  AspectProperty,
 } from "./internal/aspect";
