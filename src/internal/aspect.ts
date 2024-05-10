@@ -39,27 +39,16 @@ export async function compileAspect(
   const args = ["asc", entryFile, "--target", target, "-o", output];
 
   console.log(`Running command: ${command} ${args.join(" ")}`);
-  const childProcess = spawn(command, args);
-  childProcess.stdout.on("data", (data: any) => {
-    console.log("stdout event triggered.");
-    console.log(`stdout: ${data}`);
-  });
 
-  childProcess.stderr.on("data", (data: any) => {
-    console.log("stderr event triggered.");
-    console.error(`stderr: ${data}`);
-  });
-
-  childProcess.on("close", (code: any) => {
-    console.log("close event triggered.");
-    if (code !== 0) {
-      console.error(
-        `Failed to compile AssemblyScript: process exited with code ${code}`
-      );
-      process.exit(code);
-    } else {
-      console.log("AssemblyScript compilation completed successfully.");
-    }
+  const build = spawn(command, args, { stdio: "inherit" });
+  await new Promise((resolve, reject) => {
+    build.on("close", (code: any) => {
+      console.log(`child process exited with code ${code}`);
+      resolve(code);
+    });
+    build.on("error", (err: any) => {
+      reject(err);
+    });
   });
 }
 
