@@ -42,4 +42,4 @@ Just run `npm run build` ️👷
 ## TODO
 * [ ] Developer usage documentation (readthedocs)
 * [ ] built test based on artela devnet
-* [ ] relasse 1.0.0
+* [ ] release 1.0.0
