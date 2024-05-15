@@ -1,8 +1,10 @@
 # Hardhat plugin for Artela Network
 
+![img](docs/logo.png)
+
 This plugin allows you to interact with Artela Network from your Hardhat tasks and scripts.
 
-For usage please view [Guide](Guide.md)
+For usage please view [Artela Template](https://github.com/BuidlerHouse/artela-template)
 
 ## Installation
 
@@ -38,17 +40,6 @@ it with `npm run lint:fix`.
 Just run `npm run build` ️👷
 
 ## TODO
-* [x] Local node
-* [x] Aspect build and deploy
-* [x] Aspect bind and unbind
-* [x] deploy contract and aspect in scripts
-* [x] Integrate @artela/aspect-tool commands
-* [x] Use custom genesis.json to start local node, add test wallet account with initail balance
-* [x] Add commands like: check account balance
-* [x] Contract send/call
-* [ ] Finilize example project
-* [ ] Publish NPM package 0.0.0 (Progress: 50%)
 * [ ] Developer usage documentation (readthedocs)
-* [ ] Params verification
-* [ ] Add more examples
 * [ ] built test based on artela devnet
+* [ ] relasse 1.0.0
